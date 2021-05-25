@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">Expense</string>
+    <string-array name="spinner_options">
+        <item>Food</item>
+        <item>Shopping</item>
+        <item>Utility Bill</item>
+        <item>Rent</item>
+        <item>Entertainment</item>
+        <item>Other</item>
+    </string-array>
+</resources>
