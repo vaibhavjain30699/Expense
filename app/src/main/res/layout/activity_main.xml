@@ -15,17 +15,18 @@
 
         <androidx.cardview.widget.CardView
             android:layout_weight="8"
-            android:padding="16dp"
             android:layout_marginVertical="8dp"
-            android:layout_marginHorizontal="4dp"
+            android:layout_marginHorizontal="8dp"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
             <TextView
                 android:id="@+id/overview"
                 android:layout_gravity="center"
-                android:textSize="30dp"
+                android:textSize="20sp"
                 android:text="Hello"
+                android:textAlignment="center"
+                android:padding="16dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
 

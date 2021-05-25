@@ -11,6 +11,9 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import java.util.*
+import kotlin.time.ExperimentalTime
+import kotlin.time.milliseconds
 
 class MainActivity : AppCompatActivity() {
 
@@ -20,13 +23,7 @@ class MainActivity : AppCompatActivity() {
 
     private val newTransactionActivityRequestCode = 1
 
-    private var food_count: Int = 0;
-    private var entertainment_count: Int = 0;
-    private var shoppping_count: Int = 0;
-    private var utility_count: Int = 0;
-    private var rent_count: Int = 0;
-    private var others_count: Int = 0;
-
+    @ExperimentalTime
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -40,9 +37,8 @@ class MainActivity : AppCompatActivity() {
 
         transactionViewModel.allTransactions.observe(this, Observer { t ->
             t?.let {
-                adapter.submitList(it.asReversed())
                 transactions = it
-                count(transactions)
+                adapter.submitList(transactions.asReversed())
             }
         })
 
@@ -52,35 +48,22 @@ class MainActivity : AppCompatActivity() {
             startActivityForResult(intent,newTransactionActivityRequestCode)
         }
 
-        count(transactions)
-
         val overview: TextView = findViewById(R.id.overview)
-        overview.text = "$food_count $shoppping_count $entertainment_count $rent_count $utility_count $others_count ${transactions.size}"
+        val cal = Calendar.getInstance().time
+        cal.hours = 0
+        cal.minutes = 0
+        cal.seconds = 0
+        transactionViewModel.getTodaySpent(cal.time.milliseconds.toLongMilliseconds()).observe(this, Observer { t ->
+            t?.let {
+                overview.text = "Today's Spent: $it\n"
+            }
+        })
+        transactionViewModel.totalSpent.observe(this, Observer { t ->
+            t?.let {
+                overview.text = overview.text as String + "Total Spent: " + it.toString()
+            }
+        })
 
-    }
-
-    fun count(t:List<Transaction>){
-        food_count = 0
-        entertainment_count = 0
-        rent_count = 0
-        utility_count = 0
-        shoppping_count = 0
-        others_count = 0
-
-        for(ttt:Transaction in t){
-            if(ttt.type=="Food")
-                food_count+=ttt.amount
-            else if(ttt.type=="Entertainment")
-                entertainment_count+=ttt.amount
-            else if(ttt.type=="Rent")
-                rent_count+=ttt.amount
-            else if(ttt.type=="Utility Bill")
-                utility_count+=ttt.amount
-            else if(ttt.type=="Shopping")
-                shoppping_count+=ttt.amount
-            else
-                others_count+=ttt.amount
-        }
     }
 
 
