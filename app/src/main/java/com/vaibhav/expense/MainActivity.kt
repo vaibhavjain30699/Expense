@@ -6,11 +6,14 @@ import android.os.Bundle
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.viewModels
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import kotlinx.coroutines.flow.combine
 import java.util.*
 import kotlin.time.ExperimentalTime
 import kotlin.time.milliseconds
@@ -22,6 +25,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     private val newTransactionActivityRequestCode = 1
+
+    lateinit var overview: TextView
 
     @ExperimentalTime
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -48,22 +53,35 @@ class MainActivity : AppCompatActivity() {
             startActivityForResult(intent,newTransactionActivityRequestCode)
         }
 
-        val overview: TextView = findViewById(R.id.overview)
+        overview = findViewById(R.id.overview)
         val cal = Calendar.getInstance().time
         cal.hours = 0
         cal.minutes = 0
         cal.seconds = 0
-        transactionViewModel.getTodaySpent(cal.time.milliseconds.toLongMilliseconds()).observe(this, Observer { t ->
-            t?.let {
-                overview.text = "Today's Spent: $it\n"
-            }
-        })
-        transactionViewModel.totalSpent.observe(this, Observer { t ->
-            t?.let {
-                overview.text = overview.text as String + "Total Spent: " + it.toString()
-            }
-        })
 
+        var total = transactionViewModel.totalSpent.value
+        var today = transactionViewModel.getTodaySpent(cal.time.milliseconds.toLongMilliseconds()).value
+
+        val liveDataMerger = MediatorLiveData<Int>()
+        liveDataMerger.addSource(transactionViewModel.totalSpent){ value ->
+            total = value
+            combineValues(total,today)
+            Toast.makeText(this,"TT",Toast.LENGTH_SHORT).show()
+        }
+        liveDataMerger.addSource(transactionViewModel.getTodaySpent(cal.time.milliseconds.toLongMilliseconds())){ value ->
+            today = value
+            combineValues(total,today)
+            Toast.makeText(this,"TO",Toast.LENGTH_SHORT).show()
+        }
+        liveDataMerger.observe(this, Observer {})
+
+    }
+
+    private fun combineValues(total: Int?, today: Int?){
+        if(total!=null  &&  today!=null) {
+            val s = "Total Spent: $total\nToday's Spent: $today";
+            overview.text = s
+        }
     }
 
 
@@ -88,7 +106,7 @@ class MainActivity : AppCompatActivity() {
             }
 
         }else{
-//            Toast.makeText(this,"Transaction Failed",Toast.LENGTH_LONG).show()
+            Toast.makeText(this,"Transaction Failed",Toast.LENGTH_LONG).show()
         }
     }
 

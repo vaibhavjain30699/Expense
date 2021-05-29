@@ -27,7 +27,7 @@ class NewTransactionActivity : AppCompatActivity(), AdapterView.OnItemSelectedLi
 
         add.setOnClickListener {
             val replyIntent = Intent()
-            if(TextUtils.isEmpty(amount.text)  ||  Integer.valueOf(amount.text as String)>Int.MAX_VALUE){
+            if(TextUtils.isEmpty(amount.text)  ||  amount.text.toString().toInt()>Int.MAX_VALUE){
                 setResult(RESULT_CANCELED,replyIntent)
             }else{
                 replyIntent.putExtra("Amount",amount.text.toString().toInt())
