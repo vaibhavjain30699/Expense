@@ -1,8 +1,9 @@
-package com.vaibhav.expense
+package com.vaibhav.expense.database
 
 import androidx.room.*
+import com.vaibhav.expense.Model.Transaction
+import com.vaibhav.expense.table_name
 import kotlinx.coroutines.flow.Flow
-import java.util.*
 
 @Dao
 interface TransactionDAO {

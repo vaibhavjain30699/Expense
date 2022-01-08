@@ -1,6 +1,7 @@
 package com.vaibhav.expense
 
 import androidx.lifecycle.*
+import com.vaibhav.expense.Model.Transaction
 import kotlinx.coroutines.launch
 
 class TransactionViewModel(private val repository: TransactionRepository) : ViewModel() {

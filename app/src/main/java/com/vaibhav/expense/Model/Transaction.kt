@@ -1,7 +1,8 @@
-package com.vaibhav.expense
+package com.vaibhav.expense.Model
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.vaibhav.expense.table_name
 
 @Entity(tableName = table_name)
 data class Transaction(

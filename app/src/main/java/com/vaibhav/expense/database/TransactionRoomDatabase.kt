@@ -1,13 +1,14 @@
-package com.vaibhav.expense
+package com.vaibhav.expense.database
 
 import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.sqlite.db.SupportSQLiteDatabase
+import com.vaibhav.expense.Model.Transaction
+import com.vaibhav.expense.database_name
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
-import java.util.*
 
 @Database(entities = arrayOf(Transaction::class), version = 1, exportSchema = false)
 public abstract class TransactionRoomDatabase : RoomDatabase() {

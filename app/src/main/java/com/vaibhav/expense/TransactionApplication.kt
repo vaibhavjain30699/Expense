@@ -1,6 +1,7 @@
 package com.vaibhav.expense
 
 import android.app.Application
+import com.vaibhav.expense.database.TransactionRoomDatabase
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
 
