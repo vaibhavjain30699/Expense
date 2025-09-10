@@ -6,7 +6,7 @@ import com.vaibhav.expense.table_name
 
 @Entity(tableName = table_name)
 data class Transaction(
-    @PrimaryKey(autoGenerate = true) val id:Int = 0,
+    @PrimaryKey(autoGenerate = true) val id: Int = 0,
     val amount: Int,
     val type: String,
     val time: Long

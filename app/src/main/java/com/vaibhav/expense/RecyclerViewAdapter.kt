@@ -16,8 +16,9 @@ import com.vaibhav.expense.Model.Transaction
 import java.text.SimpleDateFormat
 import java.util.*
 
-class RecyclerViewAdapter : ListAdapter<Transaction,RecyclerViewAdapter.TransactionViewHolder>(
-    WORDS_COMPARATOR) {
+class RecyclerViewAdapter : ListAdapter<Transaction, RecyclerViewAdapter.TransactionViewHolder>(
+    WORDS_COMPARATOR
+) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TransactionViewHolder {
         return TransactionViewHolder.create(parent)
@@ -43,17 +44,17 @@ class RecyclerViewAdapter : ListAdapter<Transaction,RecyclerViewAdapter.Transact
             cal.timeInMillis = transaction.time
             this.time.text = format.format(cal.time)
 
-            val color = if(transaction.type=="Food"){
+            val color = if (transaction.type == "Food") {
                 itemView.resources.getColor(R.color.Food)
-            }else if(transaction.type=="Shopping"){
+            } else if (transaction.type == "Shopping") {
                 itemView.resources.getColor(R.color.Shopping)
-            }else if(transaction.type=="Utility Bill"){
+            } else if (transaction.type == "Utility Bill") {
                 itemView.resources.getColor(R.color.Utility_Bill)
-            }else if(transaction.type=="Rent"){
+            } else if (transaction.type == "Rent") {
                 itemView.resources.getColor(R.color.Rent)
-            }else if(transaction.type=="Entertainment"){
+            } else if (transaction.type == "Entertainment") {
                 itemView.resources.getColor(R.color.Entertainment)
-            }else {
+            } else {
                 itemView.resources.getColor(R.color.Others)
             }
 
@@ -63,11 +64,12 @@ class RecyclerViewAdapter : ListAdapter<Transaction,RecyclerViewAdapter.Transact
                 val dialog = AlertDialog.Builder(itemView.context)
                     .setTitle("Delete Transaction?")
                     .setMessage("Are you sure you want to delete the transaction?")
-                    .setPositiveButton("Yes"){ dialog,which ->
-                        val transactionViewModel = TransactionViewModel(TransactionApplication().repository)
+                    .setPositiveButton("Yes") { dialog, which ->
+                        val transactionViewModel =
+                            TransactionViewModel(TransactionApplication().repository)
                         transactionViewModel.delete(transaction = transaction)
                     }
-                    .setNegativeButton("No"){dialog,which ->
+                    .setNegativeButton("No") { dialog, which ->
                         dialog.cancel()
                     }
                     .create()
@@ -96,5 +98,4 @@ class RecyclerViewAdapter : ListAdapter<Transaction,RecyclerViewAdapter.Transact
             }
         }
     }
-
 }

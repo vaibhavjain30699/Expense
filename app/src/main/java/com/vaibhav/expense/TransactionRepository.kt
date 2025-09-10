@@ -12,7 +12,7 @@ class TransactionRepository(private val transactionDAO: TransactionDAO) {
 
     @Suppress("RedundantSuspendModifier")
     @WorkerThread
-    fun getTodaySpent(time: Long): Flow<Int>{
+    fun getTodaySpent(time: Long): Flow<Int> {
         return transactionDAO.getTodaySpent(time)
     }
 
@@ -27,5 +27,4 @@ class TransactionRepository(private val transactionDAO: TransactionDAO) {
     suspend fun delete(transaction: Transaction) {
         transactionDAO.delete(transaction)
     }
-
 }

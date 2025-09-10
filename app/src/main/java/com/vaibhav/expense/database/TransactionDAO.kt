@@ -25,5 +25,4 @@ interface TransactionDAO {
 
     @Delete
     suspend fun delete(transaction: Transaction)
-
 }

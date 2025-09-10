@@ -13,7 +13,7 @@ import kotlinx.coroutines.launch
 @Database(entities = arrayOf(Transaction::class), version = 1, exportSchema = false)
 public abstract class TransactionRoomDatabase : RoomDatabase() {
 
-    abstract fun transactionDAO() : TransactionDAO
+    abstract fun transactionDAO(): TransactionDAO
 
     private class TransactionDatabaseCallback(
         private val scope: CoroutineScope
@@ -38,7 +38,7 @@ public abstract class TransactionRoomDatabase : RoomDatabase() {
         @Volatile
         private var INSTANCE: TransactionRoomDatabase? = null
 
-        fun getDatabase(context: Context,scope: CoroutineScope): TransactionRoomDatabase {
+        fun getDatabase(context: Context, scope: CoroutineScope): TransactionRoomDatabase {
             return INSTANCE ?: synchronized(this) {
                 val instance = Room.databaseBuilder(
                     context.applicationContext,

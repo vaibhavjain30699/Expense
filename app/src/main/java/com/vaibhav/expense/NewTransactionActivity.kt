@@ -27,24 +27,28 @@ class NewTransactionActivity : AppCompatActivity(), AdapterView.OnItemSelectedLi
 
         add.setOnClickListener {
             val replyIntent = Intent()
-            if(TextUtils.isEmpty(amount.text)  ||  amount.text.toString().toInt()>Int.MAX_VALUE){
-                setResult(RESULT_CANCELED,replyIntent)
-            }else{
-                replyIntent.putExtra("Amount",amount.text.toString().toInt())
-                replyIntent.putExtra("Type",type)
-                setResult(RESULT_OK,replyIntent)
+            if (TextUtils.isEmpty(amount.text) || amount.text.toString().toInt() > Int.MAX_VALUE) {
+                setResult(RESULT_CANCELED, replyIntent)
+            } else {
+                replyIntent.putExtra("Amount", amount.text.toString().toInt())
+                replyIntent.putExtra("Type", type)
+                setResult(RESULT_OK, replyIntent)
             }
             finish()
         }
 
     }
 
-    private fun initialize () {
+    private fun initialize() {
         amount = findViewById(R.id.amount_input)
         add = findViewById(R.id.add_button)
         spinner = findViewById(R.id.dropdown_menu)
         ArrayAdapter
-            .createFromResource(this,R.array.spinner_options,R.layout.support_simple_spinner_dropdown_item)
+            .createFromResource(
+                this,
+                R.array.spinner_options,
+                R.layout.support_simple_spinner_dropdown_item
+            )
             .also { adapter ->
                 adapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item)
                 spinner.adapter = adapter
@@ -59,5 +63,4 @@ class NewTransactionActivity : AppCompatActivity(), AdapterView.OnItemSelectedLi
     override fun onNothingSelected(parent: AdapterView<*>?) {
 
     }
-
 }

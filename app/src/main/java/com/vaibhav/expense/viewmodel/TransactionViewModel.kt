@@ -9,7 +9,7 @@ class TransactionViewModel(private val repository: TransactionRepository) : View
     val allTransactions: LiveData<List<Transaction>> = repository.allTransactions.asLiveData()
     val totalSpent: LiveData<Int> = repository.totalSpent.asLiveData()
 
-    fun getTodaySpent(time: Long): LiveData<Int>{
+    fun getTodaySpent(time: Long): LiveData<Int> {
         return repository.getTodaySpent(time).asLiveData()
     }
 
@@ -23,7 +23,8 @@ class TransactionViewModel(private val repository: TransactionRepository) : View
 
 }
 
-class TransactionViewModelFactory(private val repository: TransactionRepository) : ViewModelProvider.Factory {
+class TransactionViewModelFactory(private val repository: TransactionRepository) :
+    ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(TransactionViewModel::class.java)) {
             @Suppress("UNCHECKED_CAST")
