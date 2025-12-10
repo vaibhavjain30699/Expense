@@ -47,7 +47,7 @@ class NewTransactionActivity : AppCompatActivity(), AdapterView.OnItemSelectedLi
             .createFromResource(
                 this,
                 R.array.spinner_options,
-                R.layout.support_simple_spinner_dropdown_item
+                R.layout.item_spinner
             )
             .also { adapter ->
                 adapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item)

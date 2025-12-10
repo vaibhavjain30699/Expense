@@ -3,6 +3,8 @@ package com.vaibhav.expense
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.viewModels
@@ -35,12 +37,23 @@ class MainActivity : AppCompatActivity() {
         recyclerView.adapter = adapter
         recyclerView.layoutManager = LinearLayoutManager(this)
 
+        val emptyTransactionImage = findViewById<LinearLayout>(R.id.emptyTransactionImage)
+
+
         var transactions: List<Transaction> = listOf()
 
         transactionViewModel.allTransactions.observe(this, Observer { t ->
             t?.let {
                 transactions = it
-                adapter.submitList(transactions.asReversed())
+                setOverview()
+                if (transactions.isEmpty()) {
+                    emptyTransactionImage.visibility = ImageView.VISIBLE
+                    recyclerView.visibility = RecyclerView.GONE
+                } else {
+                    emptyTransactionImage.visibility = ImageView.GONE
+                    recyclerView.visibility = RecyclerView.VISIBLE
+                    adapter.submitList(transactions.asReversed())
+                }
             }
         })
 
@@ -51,6 +64,13 @@ class MainActivity : AppCompatActivity() {
         }
 
         overview = findViewById(R.id.overview)
+        overview.text = "Total Spent: 0\nToday's Spent: 0"
+
+        setOverview()
+
+    }
+
+    fun setOverview() {
         val cal = Calendar.getInstance().time
         cal.hours = 0
         cal.minutes = 0
@@ -69,7 +89,6 @@ class MainActivity : AppCompatActivity() {
             combineValues(total, today)
         }
         liveDataMerger.observe(this, Observer {})
-
     }
 
     private fun combineValues(total: Int?, today: Int?) {
