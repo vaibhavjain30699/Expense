@@ -14,11 +14,11 @@ interface TransactionDAO {
     @Query("DELETE FROM $table_name")
     suspend fun deleteAll()
 
-    @Query("Select SUM(amount) from $table_name")
-    fun getTotalSpent(): Flow<Int>
+    @Query("SELECT SUM(amount) FROM $table_name")
+    fun getTotalSpent(): Flow<Int?>
 
-    @Query("Select SUM(amount) from $table_name where time >= :time")
-    fun getTodaySpent(time: Long): Flow<Int>
+    @Query("SELECT SUM(amount) FROM $table_name WHERE time >= :time")
+    fun getTodaySpent(time: Long): Flow<Int?>
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insert(transaction: Transaction)

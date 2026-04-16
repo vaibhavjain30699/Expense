@@ -7,10 +7,15 @@ import kotlinx.coroutines.launch
 class TransactionViewModel(private val repository: TransactionRepository) : ViewModel() {
 
     val allTransactions: LiveData<List<Transaction>> = repository.allTransactions.asLiveData()
-    val totalSpent: LiveData<Int> = repository.totalSpent.asLiveData()
+    val totalSpent: LiveData<Int?> = repository.totalSpent.asLiveData()
 
-    fun getTodaySpent(time: Long): LiveData<Int> {
-        return repository.getTodaySpent(time).asLiveData()
+    private val _todayTimestamp = MutableLiveData<Long>()
+    val todaySpent: LiveData<Int?> = _todayTimestamp.switchMap { timestamp ->
+        repository.getTodaySpent(timestamp).asLiveData()
+    }
+
+    fun setTodayTimestamp(timestamp: Long) {
+        _todayTimestamp.value = timestamp
     }
 
     fun insert(transaction: Transaction) = viewModelScope.launch {

@@ -33,27 +33,22 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         val recyclerView = findViewById<RecyclerView>(R.id.recyclerview)
-        val adapter = RecyclerViewAdapter()
+        val adapter = RecyclerViewAdapter { transaction ->
+            transactionViewModel.delete(transaction)
+        }
         recyclerView.adapter = adapter
         recyclerView.layoutManager = LinearLayoutManager(this)
 
         val emptyTransactionImage = findViewById<LinearLayout>(R.id.emptyTransactionImage)
 
-
-        var transactions: List<Transaction> = listOf()
-
-        transactionViewModel.allTransactions.observe(this, Observer { t ->
-            t?.let {
-                transactions = it
-                setOverview()
-                if (transactions.isEmpty()) {
-                    emptyTransactionImage.visibility = ImageView.VISIBLE
-                    recyclerView.visibility = RecyclerView.GONE
-                } else {
-                    emptyTransactionImage.visibility = ImageView.GONE
-                    recyclerView.visibility = RecyclerView.VISIBLE
-                    adapter.submitList(transactions.asReversed())
-                }
+        transactionViewModel.allTransactions.observe(this, Observer { transactions ->
+            if (transactions.isNullOrEmpty()) {
+                emptyTransactionImage.visibility = ImageView.VISIBLE
+                recyclerView.visibility = RecyclerView.GONE
+            } else {
+                emptyTransactionImage.visibility = ImageView.GONE
+                recyclerView.visibility = RecyclerView.VISIBLE
+                adapter.submitList(transactions.asReversed())
             }
         })
 
@@ -64,37 +59,30 @@ class MainActivity : AppCompatActivity() {
         }
 
         overview = findViewById(R.id.overview)
-        overview.text = "Total Spent: 0\nToday's Spent: 0"
-
-        setOverview()
-
+        setupOverview()
     }
 
-    fun setOverview() {
-        val cal = Calendar.getInstance().time
-        cal.hours = 0
-        cal.minutes = 0
-        cal.seconds = 0
+    private fun setupOverview() {
+        val cal = Calendar.getInstance()
+        cal.set(Calendar.HOUR_OF_DAY, 0)
+        cal.set(Calendar.MINUTE, 0)
+        cal.set(Calendar.SECOND, 0)
+        cal.set(Calendar.MILLISECOND, 0)
 
-        var total = transactionViewModel.totalSpent.value
-        var today = transactionViewModel.getTodaySpent(cal.time).value
+        transactionViewModel.setTodayTimestamp(cal.timeInMillis)
 
-        val liveDataMerger = MediatorLiveData<Int>()
-        liveDataMerger.addSource(transactionViewModel.totalSpent) { value ->
-            total = value
-            combineValues(total, today)
+        val liveDataMerger = MediatorLiveData<Pair<Int?, Int?>>()
+        liveDataMerger.addSource(transactionViewModel.totalSpent) { total ->
+            liveDataMerger.value = Pair(total, transactionViewModel.todaySpent.value)
         }
-        liveDataMerger.addSource(transactionViewModel.getTodaySpent(cal.time)) { value ->
-            today = value
-            combineValues(total, today)
+        liveDataMerger.addSource(transactionViewModel.todaySpent) { today ->
+            liveDataMerger.value = Pair(transactionViewModel.totalSpent.value, today)
         }
-        liveDataMerger.observe(this, Observer {})
-    }
 
-    private fun combineValues(total: Int?, today: Int?) {
-        if (total != null && today != null) {
-            val s = "Total Spent: $total\nToday's Spent: $today";
-            overview.text = s
+        liveDataMerger.observe(this) { pair ->
+            val total = pair.first ?: 0
+            val today = pair.second ?: 0
+            overview.text = "Total Spent: $total\nToday's Spent: $today"
         }
     }
 

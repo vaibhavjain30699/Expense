@@ -27,12 +27,18 @@ class NewTransactionActivity : AppCompatActivity(), AdapterView.OnItemSelectedLi
 
         add.setOnClickListener {
             val replyIntent = Intent()
-            if (TextUtils.isEmpty(amount.text) || amount.text.toString().toInt() > Int.MAX_VALUE) {
+            val amountStr = amount.text.toString()
+            if (TextUtils.isEmpty(amountStr)) {
                 setResult(RESULT_CANCELED, replyIntent)
             } else {
-                replyIntent.putExtra("Amount", amount.text.toString().toInt())
-                replyIntent.putExtra("Type", type)
-                setResult(RESULT_OK, replyIntent)
+                try {
+                    val amountInt = amountStr.toInt()
+                    replyIntent.putExtra("Amount", amountInt)
+                    replyIntent.putExtra("Type", type)
+                    setResult(RESULT_OK, replyIntent)
+                } catch (e: NumberFormatException) {
+                    setResult(RESULT_CANCELED, replyIntent)
+                }
             }
             finish()
         }
